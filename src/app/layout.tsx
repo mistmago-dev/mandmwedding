@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { Allura, Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
 import { wedding } from '@/data/wedding';
 
@@ -10,6 +10,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 const inter = Inter({ variable: '--font-sans', subsets: ['latin'] });
+
+const allura = Allura({ variable: '--font-script', subsets: ['latin'], weight: '400' });
 
 export const metadata: Metadata = {
 	metadataBase: new URL('https://example.com'),
@@ -35,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 	return (
 		<html
 			lang="en"
-			className={`${cormorant.variable} ${inter.variable} h-full antialiased`}>
+			className={`${cormorant.variable} ${inter.variable} ${allura.variable} h-full antialiased`}>
 			<body className="min-h-full bg-[#faf8f5] text-[#111111]">{children}</body>
 		</html>
 	);
