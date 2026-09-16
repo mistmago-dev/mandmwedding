@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { entourage, galleryItems, wedding } from '@/data/wedding';
-import { getSupabaseClient } from '@/lib/supabase';
 
 const navItems = [
 	{ label: 'Home', href: '#home' },
@@ -154,25 +153,28 @@ export default function WeddingPage() {
 		setRsvpError('');
 		setRsvpStatus('submitting');
 
-		const supabase = getSupabaseClient();
+		const endpoint = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ENDPOINT;
 
-		if (!supabase) {
+		if (!endpoint) {
 			setRsvpStatus('error');
 			setRsvpError('RSVP is not configured yet. Please try again later.');
 			return;
 		}
 
-		const { error } = await supabase
-			.from('rsvps')
-			.insert({
-				full_name: rsvp.fullName.trim(),
-				contact: rsvp.contact.trim(),
-				guest_count: Number(rsvp.guestCount),
-				guest_names: rsvp.guestNames.trim() || null,
-				message: rsvp.message.trim() || null,
+		try {
+			await fetch(endpoint, {
+				method: 'POST',
+				mode: 'no-cors',
+				headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+				body: JSON.stringify({
+					fullName: rsvp.fullName.trim(),
+					contact: rsvp.contact.trim(),
+					guestCount: Number(rsvp.guestCount),
+					guestNames: rsvp.guestNames.trim(),
+					message: rsvp.message.trim(),
+				}),
 			});
-
-		if (error) {
+		} catch {
 			setRsvpStatus('error');
 			setRsvpError('We could not save your RSVP. Please try again.');
 			return;
@@ -211,13 +213,6 @@ export default function WeddingPage() {
 					<p className="font-serif text-lg italic text-[#faf8f5]/80 sm:text-xl">“The beginning of forever”</p>
 
 					<p className="mt-8 text-[0.65rem] uppercase tracking-[0.3em] text-[#faf8f5]/70">October 26, 2026</p>
-
-					<button
-						type="button"
-						onClick={openInvitation}
-						className="mt-12 border border-[#faf8f5]/40 px-8 py-4 text-[0.65rem] font-medium uppercase tracking-[0.3em] transition-all duration-300 hover:bg-[#faf8f5] hover:text-[#6e1f2a]">
-						Open Invitation
-					</button>
 
 					<button
 						type="button"

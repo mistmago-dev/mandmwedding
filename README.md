@@ -79,23 +79,21 @@ Use a modern Vercel-friendly stack.
 
 The architecture should allow future integration with:
 
-- Supabase
-- RSVP database
+- Google Sheets RSVP responses
 - Google Maps
 - Photo gallery storage
 - Guest management
 - Analytics
 
-## Supabase RSVP Setup
+## Google Sheets RSVP Setup
 
-The RSVP form stores submissions in Supabase. Add these public project values to `.env.local` and your Vercel project:
+The RSVP form sends submissions to a Google Apps Script web app. Add its deployed URL to `.env.local` and your Vercel project:
 
 ```text
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_GOOGLE_SHEETS_ENDPOINT=https://script.google.com/macros/s/your-deployment-id/exec
 ```
 
-Run `supabase/schema.sql` in the Supabase SQL Editor before testing submissions. The schema creates the `rsvps` table and allows anonymous guests to insert responses while keeping reads disabled.
+Copy `google-apps-script/Code.gs` into the Apps Script project attached to your Google Sheet, deploy it as a web app accessible to anyone, and use the deployment URL above.
 
 ---
 
