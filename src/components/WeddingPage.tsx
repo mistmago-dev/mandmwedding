@@ -25,7 +25,7 @@ function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) 
 	);
 }
 
-function NameList({ people, centered = true }: { people?: string[]; centered?: boolean }) {
+function NameList({ people, centered = true }: { people?: readonly string[]; centered?: boolean }) {
 	if (!people || people.length === 0) {
 		return <p className={`text-sm italic text-black/40 ${centered ? 'text-center' : ''}`}>Details to be provided</p>;
 	}
@@ -43,7 +43,7 @@ function NameList({ people, centered = true }: { people?: string[]; centered?: b
 	);
 }
 
-function PersonGroup({ label, people }: { label: string; people?: string[] }) {
+function PersonGroup({ label, people }: { label: string; people?: readonly string[] }) {
 	return (
 		<div className="border-t border-black/10 py-7">
 			<p className="mb-4 text-center text-[0.6rem] font-medium uppercase tracking-[0.3em] text-[#6e1f2a]">{label}</p>
@@ -53,7 +53,7 @@ function PersonGroup({ label, people }: { label: string; people?: string[] }) {
 	);
 }
 
-function CoupleRole({ label, people }: { label: string; people?: string[] }) {
+function CoupleRole({ label, people }: { label: string; people?: readonly string[] }) {
 	return (
 		<div className="border-t border-black/10 py-8 text-center">
 			<p className="mb-3 text-[0.6rem] font-medium uppercase tracking-[0.3em] text-black/50">{label}</p>
@@ -481,14 +481,16 @@ export default function WeddingPage() {
 					{galleryItems?.length > 0 ?
 						<div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
 							{galleryItems.map((item, index) => {
-								if ('src' in item) {
+								if ('src' in item && typeof item.src === 'string') {
+									const photo = item as { src: string; alt?: string };
+
 									return (
 										<div
-											key={item.src ?? index}
+											key={photo.src || index}
 											className={`group overflow-hidden bg-[#f3eee9] ${index === 0 ? 'col-span-2 row-span-2' : ''}`}>
 											<img
-												src={item.src}
-												alt={item.alt ?? `Marvin and Meri Cris photo ${index + 1}`}
+												src={photo.src}
+												alt={photo.alt ?? `Marvin and Meri Cris photo ${index + 1}`}
 												className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
 											/>
 										</div>
