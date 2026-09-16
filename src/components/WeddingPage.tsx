@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { Fragment, useEffect, useRef, useState, type FormEvent } from 'react';
 import { entourage, galleryItems, wedding } from '@/data/wedding';
 
 const navItems = [
@@ -14,7 +14,7 @@ const navItems = [
 
 function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
 	return (
-		<div className="mb-14 text-center">
+		<div className="reveal-up mb-14 text-center">
 			<p className="mb-4 text-[0.65rem] font-medium uppercase tracking-[0.4em] text-[#6e1f2a]">{eyebrow}</p>
 
 			<h2 className="font-script text-5xl font-normal tracking-tight text-[#111111] sm:text-6xl">{title}</h2>
@@ -24,30 +24,60 @@ function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) 
 	);
 }
 
-function NameList({ people, centered = true }: { people?: readonly string[]; centered?: boolean }) {
+function NameList({
+	people,
+	centered = true,
+	withAmpersand = false,
+}: {
+	people?: readonly string[];
+	centered?: boolean;
+	withAmpersand?: boolean;
+}) {
 	if (!people || people.length === 0) {
 		return <p className={`text-sm italic text-black/40 ${centered ? 'text-center' : ''}`}>Details to be provided</p>;
 	}
 
 	return (
-		<div className={centered ? 'text-center' : ''}>
+		<div
+			className={
+				withAmpersand ? 'flex flex-wrap items-center justify-center gap-x-3'
+				: centered ?
+					'text-center'
+				:	''
+			}>
 			{people.map((person, index) => (
-				<p
-					key={`${person}-${index}`}
-					className="font-serif text-lg leading-relaxed text-[#111111]">
-					{person}
-				</p>
+				<Fragment key={`${person}-${index}`}>
+					<p
+						className={`${withAmpersand ? 'inline-block' : 'block'} font-serif text-lg leading-relaxed text-[#111111] transition-all duration-300 hover:-translate-y-1 hover:text-[#6e1f2a]`}>
+						{person}
+					</p>
+
+					{withAmpersand && index < people.length - 1 ?
+						<span className="font-serif text-lg text-[#6e1f2a]">&amp;</span>
+					:	null}
+				</Fragment>
 			))}
 		</div>
 	);
 }
 
-function PersonGroup({ label, people }: { label: string; people?: readonly string[] }) {
+function PersonGroup({
+	label,
+	people,
+	withAmpersand = false,
+}: {
+	label: string;
+	people?: readonly string[];
+	withAmpersand?: boolean;
+}) {
 	return (
 		<div className="border-t border-black/10 py-7">
 			<p className="mb-4 text-center text-[0.6rem] font-medium uppercase tracking-[0.3em] text-[#6e1f2a]">{label}</p>
 
-			<NameList people={people} />
+			<NameList
+				people={people}
+				withAmpersand={withAmpersand}
+			/>
 		</div>
 	);
 }
@@ -193,13 +223,17 @@ export default function WeddingPage() {
 		}
 	};
 
+	const scrollToTop = () => {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
 	return (
 		<main className="min-h-screen bg-[#faf8f5] text-[#111111]">
 			<div
 				className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#6e1f2a] px-6 transition-all duration-1000 ${
 					isOpen ? 'pointer-events-none invisible opacity-0' : 'visible opacity-100'
 				}`}>
-				<div className="w-full max-w-3xl text-center text-[#faf8f5]">
+				<div className="reveal-up w-full max-w-3xl text-center text-[#faf8f5]">
 					<p className="mb-8 text-[0.65rem] uppercase tracking-[0.45em] text-[#faf8f5]/70">The Wedding of</p>
 
 					<h1 className="whitespace-nowrap font-serif text-4xl font-normal leading-[0.95] tracking-tight sm:text-7xl md:text-8xl">
@@ -291,8 +325,18 @@ export default function WeddingPage() {
 
 			<section
 				id="home"
-				className="flex min-h-screen items-center justify-center bg-[#6e1f2a] px-6 pb-20 pt-28 text-[#faf8f5]">
-				<div className="w-full max-w-6xl">
+				className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#6e1f2a] px-6 pb-20 pt-28 text-[#faf8f5]">
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 bg-[url('/1_bcc.jpg')] bg-cover bg-center opacity-25"
+				/>
+
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 bg-[#6e1f2a]/80"
+				/>
+
+				<div className="relative z-10 w-full max-w-6xl">
 					<div className="mx-auto max-w-4xl text-center">
 						<p className="mb-7 text-[0.65rem] uppercase tracking-[0.45em] text-[#faf8f5]/60">We are getting married</p>
 
@@ -380,7 +424,7 @@ export default function WeddingPage() {
 						title="Where we say I do"
 					/>
 
-					<div className="grid gap-12 md:grid-cols-[1.2fr_1fr] md:gap-20">
+					<div className="reveal-up reveal-delay-1 grid gap-12 md:grid-cols-[1.2fr_1fr] md:gap-20">
 						<div className="text-center md:text-left">
 							<p className="mb-4 text-[0.6rem] uppercase tracking-[0.3em] text-[#6e1f2a]">Ceremony</p>
 
@@ -476,7 +520,7 @@ export default function WeddingPage() {
 					{galleryItems?.length > 0 ?
 						<div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
 							{galleryItems.map((item, index) => {
-								if ('src' in item && typeof item.src === 'string') {
+								if ('src' in item) {
 									const photo = item as { src: string; alt?: string };
 
 									return (
@@ -531,6 +575,7 @@ export default function WeddingPage() {
 								<PersonGroup
 									label="Parents of the Groom"
 									people={entourage.parentsOfTheGroom}
+									withAmpersand
 								/>
 							</div>
 
@@ -538,6 +583,7 @@ export default function WeddingPage() {
 								<PersonGroup
 									label="Parents of the Bride"
 									people={entourage.parentsOfTheBride}
+									withAmpersand
 								/>
 							</div>
 						</div>
@@ -549,22 +595,26 @@ export default function WeddingPage() {
 						</div>
 
 						{Math.max(entourage.principalSponsorsBoys.length, entourage.principalSponsorsGirls.length) > 0 ?
-							<div className="border-y border-black/10">
-								<div className="grid grid-cols-[1fr_auto_1fr] border-b border-black/10 px-5 py-3 text-center text-[0.55rem] font-medium uppercase tracking-[0.25em] text-black/45">
+							<div>
+								{/* <div className="grid grid-cols-[1fr_auto_1fr] border-b border-black/10 px-5 py-3 text-center text-[0.55rem] font-medium uppercase tracking-[0.25em] text-black/45">
 									<span>Boys</span>
 									<span />
-									<span>Girls</span>
-								</div>
+									<span>Girls</span> */}
+								{/* </div> */}
 
 								{Array.from(
 									{ length: Math.max(entourage.principalSponsorsBoys.length, entourage.principalSponsorsGirls.length) },
 									(_, index) => (
 										<div
 											key={`${entourage.principalSponsorsBoys[index] ?? 'boy'}-${entourage.principalSponsorsGirls[index] ?? 'girl'}-${index}`}
-											className="grid grid-cols-[1fr_auto_1fr] items-center border-b border-black/10 px-5 py-5 text-center last:border-b-0">
-											<p className="font-serif text-lg">{entourage.principalSponsorsBoys[index] ?? ''}</p>
-											<span className="px-3 font-serif text-lg text-[#6e1f2a]">&amp;</span>
-											<p className="font-serif text-lg">{entourage.principalSponsorsGirls[index] ?? ''}</p>
+											className="group mx-auto grid w-full max-w-3xl grid-cols-[minmax(0,1fr)_2rem_minmax(0,1fr)] items-center px-1 py-5 text-center transition-transform duration-300 hover:-translate-y-1 sm:grid-cols-[minmax(0,1fr)_3rem_minmax(0,1fr)] sm:px-5">
+											<p className="whitespace-nowrap text-right font-serif text-xs transition-colors duration-300 group-hover:text-[#6e1f2a] sm:text-lg">
+												{entourage.principalSponsorsBoys[index] ?? ''}
+											</p>
+											<span className="text-center font-serif text-sm text-[#6e1f2a] sm:text-lg">&amp;</span>
+											<p className="whitespace-nowrap text-left font-serif text-xs transition-colors duration-300 group-hover:text-[#6e1f2a] sm:text-lg">
+												{entourage.principalSponsorsGirls[index] ?? ''}
+											</p>
 										</div>
 									),
 								)}
@@ -815,6 +865,14 @@ export default function WeddingPage() {
 					}
 				</div>
 			</section>
+
+			<button
+				type="button"
+				onClick={scrollToTop}
+				aria-label="Scroll to top"
+				className="gentle-float fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center border border-[#faf8f5]/30 bg-[#6e1f2a] text-xl text-[#faf8f5] shadow-lg transition-transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#faf8f5]/70 focus:ring-offset-2 focus:ring-offset-[#faf8f5]">
+				↑
+			</button>
 
 			<footer className="bg-[#111111] px-6 py-20 text-center text-[#faf8f5]">
 				<p className="font-script text-3xl text-[#faf8f5]/70 sm:text-4xl">“The beginning of forever”</p>

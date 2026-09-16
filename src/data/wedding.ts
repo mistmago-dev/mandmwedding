@@ -89,6 +89,7 @@ export const entourage = {
 } as const;
 
 export const galleryItems = [
+	{ src: '/2_bcc.jpg', alt: 'Marvin and Meri Cris together outdoors' },
 	{
 		label: 'Portrait',
 		className:
