@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 	metadataBase: new URL('https://example.com'),
 	title: wedding.title,
 	description: wedding.description,
+	icons: { icon: '/favicon.png' },
 	openGraph: {
 		title: wedding.title,
 		description: wedding.description,

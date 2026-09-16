@@ -65,12 +65,79 @@ body {
 	}
 }
 
+@keyframes slow-drift {
+	0%,
+	100% {
+		transform: scale(1.04) translate3d(0, 0, 0);
+	}
+
+	50% {
+		transform: scale(1.09) translate3d(-0.5%, -0.75%, 0);
+	}
+}
+
+@keyframes draw-line {
+	from {
+		transform: scaleX(0);
+		transform-origin: left;
+	}
+
+	to {
+		transform: scaleX(1);
+		transform-origin: left;
+	}
+}
+
 .reveal-up {
 	animation: reveal-up 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .reveal-delay-1 {
 	animation-delay: 120ms;
+}
+
+.reveal-delay-2 {
+	animation-delay: 240ms;
+}
+
+.reveal-delay-3 {
+	animation-delay: 360ms;
+}
+
+.slow-drift {
+	animation: slow-drift 18s ease-in-out infinite;
+}
+
+.draw-line {
+	animation: draw-line 900ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
+}
+
+.scroll-reveal {
+	opacity: 0;
+	transform: translateY(28px);
+	transition:
+		opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-reveal.is-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.map-frame {
+	border: 1px solid rgba(110, 31, 42, 0.16);
+	border-radius: 4px;
+	box-shadow: 0 12px 28px rgba(17, 17, 17, 0.08);
+	filter: saturate(0.72) sepia(0.08) contrast(0.96);
+	transition:
+		filter 300ms ease,
+		box-shadow 300ms ease;
+}
+
+.map-frame:hover {
+	box-shadow: 0 16px 34px rgba(17, 17, 17, 0.12);
+	filter: saturate(0.84) sepia(0.05) contrast(0.98);
 }
 
 .gentle-float {
@@ -97,5 +164,11 @@ body {
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
 		scroll-behavior: auto !important;
+	}
+
+	.scroll-reveal {
+		opacity: 1;
+		transform: none;
+		transition: none;
 	}
 }

@@ -19,7 +19,7 @@ function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) 
 
 			<h2 className="font-script text-5xl font-normal tracking-tight text-[#111111] sm:text-6xl">{title}</h2>
 
-			<div className="mx-auto mt-6 h-px w-12 bg-[#6e1f2a]/50" />
+			<div className="draw-line mx-auto mt-6 h-px w-12 bg-[#6e1f2a]/50" />
 		</div>
 	);
 }
@@ -104,6 +104,7 @@ export default function WeddingPage() {
 	const [rsvp, setRsvp] = useState(emptyRsvp);
 	const [rsvpStatus, setRsvpStatus] = useState<RsvpStatus>('idle');
 	const [rsvpError, setRsvpError] = useState('');
+	const [showScrollTop, setShowScrollTop] = useState(false);
 
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -146,6 +147,25 @@ export default function WeddingPage() {
 		return () => {
 			audioRef.current?.pause();
 		};
+	}, []);
+
+	useEffect(() => {
+		const sections = document.querySelectorAll<HTMLElement>('.scroll-reveal');
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('is-visible');
+						observer.unobserve(entry.target);
+					}
+				});
+			},
+			{ threshold: 0.12 },
+		);
+
+		sections.forEach((section) => observer.observe(section));
+
+		return () => observer.disconnect();
 	}, []);
 
 	const openInvitation = async () => {
@@ -223,6 +243,17 @@ export default function WeddingPage() {
 		}
 	};
 
+	useEffect(() => {
+		const handleScroll = () => {
+			setShowScrollTop(window.scrollY > 200);
+		};
+
+		window.addEventListener('scroll', handleScroll);
+		handleScroll();
+
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, []);
+
 	const scrollToTop = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
@@ -230,10 +261,20 @@ export default function WeddingPage() {
 	return (
 		<main className="min-h-screen bg-[#faf8f5] text-[#111111]">
 			<div
-				className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#6e1f2a] px-6 transition-all duration-1000 ${
+				className={`fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#6e1f2a] px-6 transition-all duration-1000 ${
 					isOpen ? 'pointer-events-none invisible opacity-0' : 'visible opacity-100'
 				}`}>
-				<div className="reveal-up w-full max-w-3xl text-center text-[#faf8f5]">
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 bg-[url('/6_bcc.jpg')] bg-cover bg-center opacity-25"
+				/>
+
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 bg-[#6e1f2a]/80"
+				/>
+
+				<div className="reveal-up relative z-10 w-full max-w-3xl text-center text-[#faf8f5]">
 					<p className="mb-8 text-[0.65rem] uppercase tracking-[0.45em] text-[#faf8f5]/70">The Wedding of</p>
 
 					<h1 className="whitespace-nowrap font-serif text-4xl font-normal leading-[0.95] tracking-tight sm:text-7xl md:text-8xl">
@@ -256,7 +297,6 @@ export default function WeddingPage() {
 					</button>
 				</div>
 			</div>
-
 			<header className="fixed left-0 right-0 top-0 z-50 border-b border-black/5 bg-[#faf8f5]/90 backdrop-blur-md">
 				<div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
 					<button
@@ -322,13 +362,12 @@ export default function WeddingPage() {
 					</nav>
 				</div>
 			</header>
-
 			<section
 				id="home"
 				className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#6e1f2a] px-6 pb-20 pt-28 text-[#faf8f5]">
 				<div
 					aria-hidden="true"
-					className="absolute inset-0 bg-[url('/1_bcc.jpg')] bg-cover bg-center opacity-25"
+					className="slow-drift absolute inset-0 bg-[url('/2_bcc.jpg')] bg-cover bg-center opacity-25"
 				/>
 
 				<div
@@ -338,9 +377,11 @@ export default function WeddingPage() {
 
 				<div className="relative z-10 w-full max-w-6xl">
 					<div className="mx-auto max-w-4xl text-center">
-						<p className="mb-7 text-[0.65rem] uppercase tracking-[0.45em] text-[#faf8f5]/60">We are getting married</p>
+						<p className="reveal-up mb-7 text-[0.65rem] uppercase tracking-[0.45em] text-[#faf8f5]/60">
+							We are getting married
+						</p>
 
-						<h1 className="whitespace-nowrap font-serif text-4xl font-normal leading-[0.9] tracking-tight sm:text-8xl md:text-9xl">
+						<h1 className="reveal-up reveal-delay-1 whitespace-nowrap font-serif text-4xl font-normal leading-[0.9] tracking-tight sm:text-8xl md:text-9xl">
 							Marvin
 							<span className="mx-2 text-[#faf8f5]/40 sm:mx-5">&</span>
 							Meri Cris
@@ -348,9 +389,11 @@ export default function WeddingPage() {
 
 						<div className="mx-auto my-10 h-px w-20 bg-[#faf8f5]/30" />
 
-						<p className="font-serif text-xl italic text-[#faf8f5]/80 sm:text-2xl">The beginning of forever</p>
+						<p className="reveal-up reveal-delay-2 font-serif text-xl italic text-[#faf8f5]/80 sm:text-2xl">
+							The beginning of forever
+						</p>
 
-						<div className="mt-10 flex flex-col items-center gap-3 text-[0.65rem] uppercase tracking-[0.3em] text-[#faf8f5]/60 sm:flex-row sm:justify-center sm:gap-8">
+						<div className="reveal-up reveal-delay-3 mt-10 flex flex-col items-center gap-3 text-[0.65rem] uppercase tracking-[0.3em] text-[#faf8f5]/60 sm:flex-row sm:justify-center sm:gap-8">
 							<span>October 26, 2026</span>
 							<span className="hidden h-1 w-1 rounded-full bg-[#faf8f5]/40 sm:block" />
 							<span>San Francisco, Bulan</span>
@@ -374,11 +417,20 @@ export default function WeddingPage() {
 					</div>
 				</div>
 			</section>
-
 			<section
 				id="details"
-				className="px-6 py-28 sm:py-36">
-				<div className="mx-auto max-w-5xl">
+				className="scroll-reveal relative overflow-hidden bg-[#faf8f5] px-6 py-28 sm:py-36">
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 bg-[url('/6_bcc.jpg')] bg-cover bg-center opacity-60"
+				/>
+
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 bg-gradient-to-b from-[#faf8f5]/75 via-[#faf8f5]/90 to-[#faf8f5]"
+				/>
+
+				<div className="relative z-10 mx-auto max-w-5xl">
 					<SectionHeading
 						eyebrow="You are invited"
 						title="Join us as we begin forever"
@@ -416,8 +468,7 @@ export default function WeddingPage() {
 					</div>
 				</div>
 			</section>
-
-			<section className="bg-[#f3eee9] px-6 py-28 sm:py-36">
+			<section className="scroll-reveal bg-[#f3eee9] px-6 py-28 sm:py-36">
 				<div className="mx-auto max-w-5xl">
 					<SectionHeading
 						eyebrow="The Wedding Day"
@@ -434,7 +485,7 @@ export default function WeddingPage() {
 
 							<iframe
 								src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d267.94661302324073!2d123.90645458261373!3d12.721443274812716!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a0d1536151385f%3A0xaa297fc4eaa8d63d!2sSan%20Antonio%20de%20Padua%20Parish%20Church%20-%20Polot%2C%20Bulan%2C%20Sorsogon%20(Diocese%20of%20Sorsogon)!5e1!3m2!1sen!2sph!4v1789553152502!5m2!1sen!2sph"
-								className="mt-8 aspect-[4/3] w-full border-0 md:w-[280px] lg:w-[400px]"
+								className="map-frame mt-8 aspect-[4/3] w-full border-0 md:w-[280px] lg:w-[400px]"
 								allowFullScreen
 								loading="lazy"
 								referrerPolicy="strict-origin-when-cross-origin"
@@ -442,7 +493,7 @@ export default function WeddingPage() {
 							/>
 						</div>
 
-						<div className="border-t border-black/10 pt-10 text-center md:border-l md:border-t-0 md:pt-0 md:text-left">
+						<div className="border-t border-black/10 pt-10 text-center md:border-t-0 md:pt-0 md:text-left">
 							<p className="mb-4 text-[0.6rem] uppercase tracking-[0.3em] text-[#6e1f2a]">Reception</p>
 
 							<h3 className="font-serif text-3xl">San Francisco Covered Court</h3>
@@ -451,7 +502,7 @@ export default function WeddingPage() {
 
 							<iframe
 								src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d267.9484973039009!2d123.90690550273776!3d12.71965836477921!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a0d1430bb2f047%3A0xaa363bdb40e65e3b!2sSAN%20FRANCISCO%20COVERED%20COURT!5e1!3m2!1sen!2sph!4v1789553255255!5m2!1sen!2sph"
-								className="mt-8 aspect-[4/3] w-full border-0 md:w-[280px] lg:w-[400px]"
+								className="map-frame mt-8 aspect-[4/3] w-full border-0 md:w-[280px] lg:w-[400px]"
 								allowFullScreen
 								loading="lazy"
 								referrerPolicy="strict-origin-when-cross-origin"
@@ -461,8 +512,7 @@ export default function WeddingPage() {
 					</div>
 				</div>
 			</section>
-
-			<section className="bg-[#111111] px-6 py-24 text-[#faf8f5]">
+			<section className="scroll-reveal bg-[#111111] px-6 py-24 text-[#faf8f5]">
 				<div className="mx-auto max-w-5xl text-center">
 					<p className="mb-10 text-[0.6rem] uppercase tracking-[0.4em] text-[#faf8f5]/40">Counting down to forever</p>
 
@@ -483,10 +533,9 @@ export default function WeddingPage() {
 					</div>
 				</div>
 			</section>
-
 			<section
 				id="story"
-				className="bg-[#111111] px-6 py-28 text-[#faf8f5] sm:py-36">
+				className="scroll-reveal bg-[#111111] px-6 py-28 text-[#faf8f5] sm:py-36">
 				<div className="mx-auto max-w-5xl">
 					<div className="mb-16 text-center">
 						<p className="mb-4 text-[0.65rem] uppercase tracking-[0.4em] text-[#faf8f5]/40">Our Story</p>
@@ -510,7 +559,7 @@ export default function WeddingPage() {
 
 			<section
 				id="gallery"
-				className="px-6 py-28 sm:py-36">
+				className="scroll-reveal px-6 py-28 sm:py-36">
 				<div className="mx-auto max-w-6xl">
 					<SectionHeading
 						eyebrow="Moments"
@@ -520,27 +569,24 @@ export default function WeddingPage() {
 					{galleryItems?.length > 0 ?
 						<div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
 							{galleryItems.map((item, index) => {
-								if ('src' in item) {
-									const photo = item as { src: string; alt?: string };
-
-									return (
-										<div
-											key={photo.src || index}
-											className={`group overflow-hidden bg-[#f3eee9] ${index === 0 ? 'col-span-2 row-span-2' : ''}`}>
-											<img
-												src={photo.src}
-												alt={photo.alt ?? `Marvin and Meri Cris photo ${index + 1}`}
-												className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-											/>
-										</div>
-									);
-								}
+								const tileClass =
+									[
+										'col-span-2 md:col-span-2 md:row-span-2',
+										'md:col-span-1',
+										'md:col-span-1',
+										'md:col-span-1',
+										'md:col-span-1',
+									][index] ?? 'md:col-span-1';
 
 								return (
 									<div
-										key={`${item.label}-${index}`}
-										className={`group flex min-h-[220px] items-center justify-center overflow-hidden ${item.className}`}>
-										<p className="text-xs uppercase tracking-[0.25em] text-white/70">{item.label}</p>
+										key={item.src || index}
+										className={`group aspect-[4/3] overflow-hidden bg-[#f3eee9] transition-shadow duration-500 hover:shadow-xl ${tileClass} md:aspect-auto`}>
+										<img
+											src={item.src}
+											alt={item.alt ?? `Marvin and Meri Cris photo ${index + 1}`}
+											className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+										/>
 									</div>
 								);
 							})}
@@ -554,7 +600,7 @@ export default function WeddingPage() {
 
 			<section
 				id="entourage"
-				className="bg-[#f3eee9] px-6 py-28 sm:py-36">
+				className="scroll-reveal bg-[#f3eee9] px-6 py-28 sm:py-36">
 				<div className="mx-auto max-w-6xl">
 					<SectionHeading
 						eyebrow="The Entourage"
@@ -731,8 +777,7 @@ export default function WeddingPage() {
 					</div>
 				</div>
 			</section>
-
-			<section className="px-6 py-28 sm:py-36">
+			<section className="scroll-reveal px-6 py-28 sm:py-36">
 				<div className="mx-auto max-w-4xl">
 					<SectionHeading
 						eyebrow="Dress Code"
@@ -758,10 +803,9 @@ export default function WeddingPage() {
 					</div>
 				</div>
 			</section>
-
 			<section
 				id="rsvp"
-				className="bg-[#6e1f2a] px-6 py-28 text-[#faf8f5] sm:py-36">
+				className="scroll-reveal bg-[#6e1f2a] px-6 py-28 text-[#faf8f5] sm:py-36">
 				<div className="mx-auto max-w-4xl">
 					<p className="mb-5 text-[0.65rem] uppercase tracking-[0.4em] text-[#faf8f5]/50">Kindly Respond</p>
 
@@ -865,15 +909,15 @@ export default function WeddingPage() {
 					}
 				</div>
 			</section>
-
-			<button
-				type="button"
-				onClick={scrollToTop}
-				aria-label="Scroll to top"
-				className="gentle-float fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center border border-[#faf8f5]/30 bg-[#6e1f2a] text-xl text-[#faf8f5] shadow-lg transition-transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#faf8f5]/70 focus:ring-offset-2 focus:ring-offset-[#faf8f5]">
-				↑
-			</button>
-
+			{showScrollTop && (
+				<button
+					type="button"
+					onClick={scrollToTop}
+					aria-label="Scroll to top"
+					className="gentle-float fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-[#faf8f5]/30 bg-[#6e1f2a] text-xl text-[#faf8f5] shadow-lg transition-transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#faf8f5]/70 focus:ring-offset-2 focus:ring-offset-[#faf8f5]">
+					↑
+				</button>
+			)}
 			<footer className="bg-[#111111] px-6 py-20 text-center text-[#faf8f5]">
 				<p className="font-script text-3xl text-[#faf8f5]/70 sm:text-4xl">“The beginning of forever”</p>
 
