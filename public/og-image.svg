@@ -1,0 +1,10 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#6E1F2A"/>
+  <rect x="72" y="72" width="1056" height="486" rx="32" fill="#FAF8F5" fill-opacity="0.06" stroke="#F3DFE2" stroke-opacity="0.6"/>
+  <circle cx="950" cy="120" r="120" fill="#FAF8F5" fill-opacity="0.08"/>
+  <circle cx="220" cy="500" r="150" fill="#FAF8F5" fill-opacity="0.06"/>
+  <text x="600" y="255" text-anchor="middle" fill="#FAF8F5" font-family="Georgia, serif" font-size="42" letter-spacing="10">MARVIN &amp; MERI CRIS</text>
+  <text x="600" y="325" text-anchor="middle" fill="#F5ECEF" font-family="Georgia, serif" font-style="italic" font-size="54">The Beginning of Forever</text>
+  <line x1="360" y1="360" x2="840" y2="360" stroke="#F3DFE2" stroke-opacity="0.7"/>
+  <text x="600" y="430" text-anchor="middle" fill="#FAF8F5" font-family="Arial, sans-serif" font-size="28" letter-spacing="10">October 26, 2026</text>
+</svg>
